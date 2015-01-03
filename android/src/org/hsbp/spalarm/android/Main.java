@@ -85,7 +85,7 @@ public class Main extends Activity implements
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        System.err.println(dev.address.toString()); // TODO set alarm
+        new SetAlarmTask().execute(dev);
     }
 
     @Override
@@ -102,6 +102,24 @@ public class Main extends Activity implements
         this.hourOfDay = hourOfDay;
         this.minuteOfHour = minute;
         updatePreview();
+    }
+
+    private class SetAlarmTask extends AsyncTask<Device, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(final Device... dev) {
+            try {
+                return dev[0].setAlarm(currentColor, hourOfDay, minuteOfHour);
+            } catch (IOException ioe) {
+                return Boolean.FALSE;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean result) {
+            Toast.makeText(Main.this, result.booleanValue() ?
+                    "The alarm has been set." : "An error occured.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class LoadDevicesTask extends AsyncTask<Context, Void, Set<Device>> {

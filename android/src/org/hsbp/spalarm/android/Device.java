@@ -1,6 +1,7 @@
 package org.hsbp.spalarm.android;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 
@@ -62,6 +63,40 @@ public class Device
         socket.close();
 
         return devices;
+    }
+
+    public boolean setAlarm(final int color, final int hourOfDay,
+            final int minuteOfHour) throws IOException {
+        final byte[] payload = new byte[5];
+        payload[0] = (byte)Color.red(color);
+        payload[1] = (byte)Color.green(color);
+        payload[2] = (byte)Color.blue(color);
+        payload[3] = (byte)hourOfDay;
+        payload[4] = (byte)minuteOfHour;
+
+        final DatagramSocket socket = new DatagramSocket(PORT);
+        try {
+            byte[] buf = new byte[3];
+            final DatagramPacket response = new DatagramPacket(buf, buf.length);
+            final DatagramPacket packet = new DatagramPacket(payload, 5, address, PORT);
+            socket.setSoTimeout(500);
+
+            for (int i = 0; i < 4; i++) {
+                socket.send(packet);
+
+                try {
+                    socket.receive(response);
+                } catch (SocketTimeoutException ste) {
+                    continue;
+                }
+                if (response.getAddress().equals(address) &&
+                        response.getLength() == 3 &&
+                        new String(buf, 0, 3).equals("ACK")) return true;
+            }
+        } finally {
+            socket.close();
+        }
+        return false;
     }
 
     private static InetAddress getBroadcastAddress(final Context ctx)
