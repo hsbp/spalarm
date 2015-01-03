@@ -40,7 +40,7 @@ public class Device
         if (broadcast == null) return null;
 
         final Set<Device> devices = new TreeSet<Device>(new DeviceComparator());
-        final DatagramSocket socket = new DatagramSocket(PORT);
+        final DatagramSocket socket = new DatagramSocket(DISCOVERY_PORT);
         socket.setBroadcast(true);
         final DatagramPacket packet = new DatagramPacket(DISCOVER,
                 DISCOVER.length, broadcast, DISCOVERY_PORT);
