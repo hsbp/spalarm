@@ -33,4 +33,35 @@
         android:onClick="selectTime"
         />
     </LinearLayout>
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:text="Select a Spark.io Alarm Clock to set on"
+    />
+<Spinner
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/devices"
+    />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Refresh list"
+        android:onClick="loadDevices"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Set alarm"
+        android:onClick="setAlarm"
+        />
+    </LinearLayout>
 </LinearLayout>

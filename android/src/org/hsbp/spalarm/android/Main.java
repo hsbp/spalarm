@@ -2,11 +2,17 @@ package org.hsbp.spalarm.android;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TimePicker;
-import android.widget.TextView;
+import android.widget.*;
+
+import java.io.IOException;
+import java.util.Set;
+import java.util.ArrayList;
+
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class Main extends Activity implements
@@ -65,6 +71,17 @@ public class Main extends Activity implements
         new TimePickerDialog(this, this, hourOfDay, minuteOfHour, true).show();
     }
 
+    public void loadDevices(final View v) {
+        new LoadDevicesTask().execute(this);
+    }
+
+    public void setAlarm(final View v) {
+        final Spinner deviceList = (Spinner)findViewById(R.id.devices);
+        final Device dev = (Device)deviceList.getSelectedItem();
+        if (dev == null) return; // TODO display "select device" message
+        System.err.println(dev.address.toString()); // TODO set alarm
+    }
+
     @Override
     public void onOk(final AmbilWarnaDialog dialog, final int color) {
         currentColor = color;
@@ -79,5 +96,30 @@ public class Main extends Activity implements
         this.hourOfDay = hourOfDay;
         this.minuteOfHour = minute;
         updatePreview();
+    }
+
+    private class LoadDevicesTask extends AsyncTask<Context, Void, Set<Device>> {
+        @Override
+        protected Set<Device> doInBackground(final Context... ctx) {
+            try {
+                return Device.discover(ctx[0]);
+            } catch (IOException ioe) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Set<Device> devices) {
+            if (devices == null) {
+                Toast.makeText(Main.this, "Network error, is your WiFi turned on?",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            final Spinner ui = (Spinner)findViewById(R.id.devices);
+            ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(Main.this,
+                    android.R.layout.simple_spinner_item, new ArrayList<Device>(devices));
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ui.setAdapter(adapter);
+        }
     }
 }
