@@ -1,13 +1,14 @@
 package org.hsbp.spalarm.android;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class Main extends Activity implements AmbilWarnaDialog.OnAmbilWarnaListener
 {
-    private int currentColor = 0xFFFFFF;
+    private int currentColor = Color.WHITE;
     private final static String CURRENT_COLOR = "org.hsbp.spalarm.android.Main.CURRENT_COLOR";
 
     /** Called when the activity is first created. */
