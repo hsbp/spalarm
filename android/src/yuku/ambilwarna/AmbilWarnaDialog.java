@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import org.hsbp.spalarm.android.R;
 
 public class AmbilWarnaDialog {
 	public interface OnAmbilWarnaListener {
