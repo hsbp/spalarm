@@ -58,7 +58,6 @@ public class Device
             devices.add(new Device(
                         new String(buf, response.getOffset(), response.getLength()),
                         response.getAddress()));
-            System.err.println("DEVICE @ " + response.getAddress().toString());
         }
         socket.close();
 
