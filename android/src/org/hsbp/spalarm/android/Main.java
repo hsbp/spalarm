@@ -78,7 +78,13 @@ public class Main extends Activity implements
     public void setAlarm(final View v) {
         final Spinner deviceList = (Spinner)findViewById(R.id.devices);
         final Device dev = (Device)deviceList.getSelectedItem();
-        if (dev == null) return; // TODO display "select device" message
+        if (dev == null) {
+            Toast.makeText(Main.this, deviceList.getCount() > 0 ?
+                    "Please select a Spark.io Alarm Clock from the list" :
+                    "Touch the Refresh list button!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         System.err.println(dev.address.toString()); // TODO set alarm
     }
 
