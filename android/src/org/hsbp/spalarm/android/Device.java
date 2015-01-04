@@ -8,9 +8,7 @@ import android.net.wifi.WifiManager;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.*;
-import java.util.Comparator;
-import java.util.TreeSet;
-import java.util.Set;
+import java.util.*;
 
 public class Device
 {
@@ -56,9 +54,10 @@ public class Device
             } catch (SocketTimeoutException ste) {
                 continue;
             }
-            devices.add(new Device(
-                        new String(buf, response.getOffset(), response.getLength()),
-                        response.getAddress()));
+            final byte[] payload = Arrays.copyOfRange(buf, response.getOffset(),
+                    response.getOffset() + response.getLength());
+            if (Arrays.equals(DISCOVER, payload)) continue;
+            devices.add(new Device(new String(payload), response.getAddress()));
         }
         socket.close();
 
