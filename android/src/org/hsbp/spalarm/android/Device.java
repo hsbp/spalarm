@@ -2,6 +2,8 @@ package org.hsbp.spalarm.android;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Parcelable;
+import android.os.Parcel;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 
@@ -10,7 +12,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
-public class Device
+public class Device implements Parcelable
 {
     public final String nickname;
     public final InetAddress address;
@@ -33,6 +35,31 @@ public class Device
         this.nickname = nickname;
         this.address = address;
     }
+
+    private Device(final Parcel in) {
+        nickname = in.readString();
+        address = (InetAddress)in.readSerializable();
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(final Parcel out, final int flags) {
+        out.writeString(nickname);
+        out.writeSerializable(address);
+    }
+
+    public static final Parcelable.Creator<Device> CREATOR
+        = new Parcelable.Creator<Device>() {
+            public Device createFromParcel(final Parcel in) {
+                return new Device(in);
+            }
+
+            public Device[] newArray(final int size) {
+                return new Device[size];
+            }
+        };
 
     public static Set<Device> discover(final Context ctx) throws IOException {
         final InetAddress broadcast = getBroadcastAddress(ctx);

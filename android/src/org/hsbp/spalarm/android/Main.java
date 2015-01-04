@@ -31,6 +31,7 @@ public class Main extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         updatePreview();
+        loadDevices(null);
     }
 
     @Override
