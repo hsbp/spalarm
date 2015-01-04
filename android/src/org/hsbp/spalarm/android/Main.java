@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.*;
 import android.view.View;
 import android.widget.*;
 
@@ -21,9 +20,11 @@ public class Main extends Activity implements
     private int currentColor = Color.WHITE;
     private int hourOfDay = 6;
     private int minuteOfHour = 20;
+    private ArrayList<Parcelable> devList;
     private final static String CURRENT_COLOR = "org.hsbp.spalarm.android.Main.CURRENT_COLOR";
     private final static String HOUR_OF_DAY = "org.hsbp.spalarm.android.Main.HOUR_OF_DAY";
     private final static String MINUTE_OF_HOUR = "org.hsbp.spalarm.android.Main.MINUTE_OF_HOUR";
+    private final static String DEVICE_LIST = "org.hsbp.spalarm.android.Main.DEVICE_LIST";
 
     /** Called when the activity is first created. */
     @Override
@@ -39,6 +40,7 @@ public class Main extends Activity implements
         outState.putInt(CURRENT_COLOR, currentColor);
         outState.putInt(HOUR_OF_DAY, hourOfDay);
         outState.putInt(MINUTE_OF_HOUR, minuteOfHour);
+        outState.putParcelableArrayList(DEVICE_LIST, devList);
         super.onSaveInstanceState(outState);
     }
 
@@ -47,6 +49,7 @@ public class Main extends Activity implements
         currentColor = savedInstanceState.getInt(CURRENT_COLOR);
         hourOfDay = savedInstanceState.getInt(HOUR_OF_DAY);
         minuteOfHour = savedInstanceState.getInt(MINUTE_OF_HOUR);
+        updateList(savedInstanceState.getParcelableArrayList(DEVICE_LIST));
         super.onRestoreInstanceState(savedInstanceState);
         updatePreview();
     }
@@ -140,11 +143,16 @@ public class Main extends Activity implements
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            final Spinner ui = (Spinner)findViewById(R.id.devices);
-            ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(Main.this,
-                    android.R.layout.simple_spinner_item, new ArrayList<Device>(devices));
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            ui.setAdapter(adapter);
+            updateList(new ArrayList<Parcelable>(devices));
         }
+    }
+
+    private void updateList(final ArrayList<Parcelable> devs) {
+        devList = devs;
+        final Spinner ui = (Spinner)findViewById(R.id.devices);
+        ArrayAdapter<Parcelable> adapter = new ArrayAdapter<Parcelable>(Main.this,
+                android.R.layout.simple_spinner_item, devList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ui.setAdapter(adapter);
     }
 }
