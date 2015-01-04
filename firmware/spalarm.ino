@@ -1,3 +1,5 @@
+#include "SparkButton.h"
+
 #define SET_ALARM_PORT 42620
 #define DISCOVERY_PORT 42621
 
@@ -16,9 +18,12 @@ unsigned long lastSync = millis();
 
 byte alarm[6];
 
+SparkButton btn = SparkButton();
+
 void setup() {
 	Discovery.begin(DISCOVERY_PORT);
 	SetAlarm.begin(SET_ALARM_PORT);
+	btn.begin();
 	for (byte b = 0; b < 6; b++) alarm[b] = EEPROM.read(b);
 }
 
@@ -42,12 +47,10 @@ void loop() {
 		for (byte b = 0; b < 6; b++) EEPROM.write(b, alarm[b]);
 	}
 	if (alarm[SET] && alarm[HOUR] == Time.hour() && alarm[MINUTE] == Time.minute()) {
-		RGB.control(true);
-		RGB.brightness(0);
-		RGB.color(alarm[RED], alarm[GREEN], alarm[BLUE]);
-		for (byte b = 0; b < 255; b++) {
-			RGB.brightness(b + 1);
-			delay(64);
+		for (byte b = 0; b <= 10; b++) {
+			for (byte c = 1; c < 12; c++) btn.ledOn(c, alarm[RED] * b / 10,
+				alarm[GREEN] * b / 10, alarm[BLUE] * b / 10);
+			delay(300);
 		}
 		playMelody();
 	}
